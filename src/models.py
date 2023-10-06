@@ -1,6 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import Column, ForeignKey, Integer
-from sqlalchemy.orm import relationship
+# from sqlalchemy import Column, ForeignKey, Integer
+# from sqlalchemy.orm import relationship
 
 
 db = SQLAlchemy()
@@ -12,6 +12,7 @@ class User(db.Model):
     password = db.Column(db.String(80), unique=False, nullable=False)
     is_active = db.Column(db.Boolean(), unique=False, nullable=False)
     
+    user = db.relationship("Favoritos")
 
     def __repr__(self):
         return '<User %r>' % self.id
@@ -20,7 +21,6 @@ class User(db.Model):
         return {
             "id":    self.id,
             "email": self.email,
-            "password": self.password,
             "is_active": self.is_active,
             # do not serialize the password, its a security breach
         }
@@ -33,7 +33,7 @@ class Planets(db.Model):
     gravedad = db.Column(db.String(80), unique=False, nullable=False)
     poblacion = db.Column(db.String(80), unique=False, nullable=False)
     
-
+    planets = db.relationship("Favoritos")
 
     def __repr__(self):
         return '<Planets %r>' % self.id
@@ -59,7 +59,7 @@ class Personajes(db.Model):
     especie = db.Column(db.String(80), unique=False, nullable=False)
     color_de_ojos = db.Column(db.String(80), unique=False, nullable=False)
     
-
+    personajes = db.relationship("Favoritos")
 
     def __repr__(self):
         return '<Personajes %r>' % self.id
@@ -83,7 +83,7 @@ class Vehiculos(db.Model):
     crew = db.Column(db.String(80), unique=False, nullable=False)
     passengers = db.Column(db.String(80), unique=False, nullable=False)
         
-
+    vehiculos = db.relationship("Favoritos")
 
     def __repr__(self):
         return '<Vehiculos %r>' % self.id
@@ -109,7 +109,7 @@ class Naves(db.Model):
     passengers = db.Column(db.String(80), unique=False, nullable=False)
     model = db.Column(db.String(80), unique=False, nullable=False)
 
-    
+    naves = db.relationship("Favoritos")
         
         
 
@@ -138,12 +138,6 @@ class Favoritos(db.Model):
     naves_id = db.Column(db.Integer, db.ForeignKey("naves.id"))
 
 
-    planets = db.relationship(Planets)
-    personajes = db.relationship(Personajes)
-    naves = db.relationship(Naves)
-    user = db.relationship(User)
-    vehiculos = db.relationship(Vehiculos)
-
 
 
     def __repr__(self):
@@ -154,14 +148,18 @@ class Favoritos(db.Model):
             "id": self.id,
 
             "user_id": self.user_id,
+            "personajes_id": self.personajes_id,
+            "planets_id": self.planets_id,
+            "vehiculos_id": self.vehiculos_id,
+            "naves_id": self.naves_id
            
-            "personajes": None if self.personajes is None else self.personajes.serialize(),
+            # "personajes": None if self.personajes is None else self.personajes.serialize(),
            
-            "planets": None if self.planets is None else self.planets.serialize(),
+            # "planets": None if self.planets is None else self.planets.serialize(),
             
-            "vehiculos": None if self.vehiculos is None else self.vehiculos.serialize(),
+            # "vehiculos": None if self.vehiculos is None else self.vehiculos.serialize(),
            
-            "naves": None if self.naves is None else self.naves.serialize(),
+            # "naves": None if self.naves is None else self.naves.serialize(),
            
              }
 

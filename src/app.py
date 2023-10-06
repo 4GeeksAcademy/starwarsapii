@@ -121,12 +121,22 @@ def crear_un_planeta():                # definimos la funcion para crear un plan
     
     return jsonify(nuevo_planeta.serialize()), 200 # esta es la respuesta  que va a recibir postman o el front
         
-
-
    
-   
-       
+@app.route('/personajes/<int:personajes_id>', methods=['GET'])
+def obtener_personaje(personajes_id):
+    personaje=Personajes.query.filter_by(id=personajes_id).first()
+    
 
+    if personaje is None:
+        return jsonify({"Msg": "El personaje no existe"}), 400
+    results=personaje.serialize()
+    return jsonify(results), 200
+
+@app.route('/personajes', methods=['GET'])
+def obtener_personajes():
+    personajes=Personajes.query.all()
+    results=list(map(lambda personaje:personaje.serialize(), personajes))
+    return jsonify(results), 200
 
 
 @app.route('/personajes', methods=['POST']) # aqui definimos la ruta 
@@ -303,7 +313,7 @@ def get_favoritos():
     favoritos = Favoritos.query.all()
     favoritos = list(map(lambda favoritos: favoritos.serialize(), favoritos))
     if favoritos == [] :
-        return ({ "msj": "no hay usuario" }), 404
+        return ({ "msj": "no hay favorito" }), 404
     return favoritos, 200
 
 
@@ -312,7 +322,7 @@ def select_fav(id):
     favoritos = Favoritos.query.filter_by(user_id = id).all()
 
     if favoritos == [] :
-        return ({ "msj": "no hay usuario" }), 404
+        return ({ "msj": "no hay favorito" }), 404
     
     favoritos_user = [favoritos.serialize() for favoritos in favoritos]
 
@@ -355,7 +365,7 @@ def new_favoritosplanet():
    
     newfavorito =Favoritos(
     user_id = datos['user_id'],
-    planets_id = datos['planet_id']
+    planets_id = datos['planets_id']
     )
 
     db.session.add(newfavorito)
